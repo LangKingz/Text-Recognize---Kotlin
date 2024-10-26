@@ -2,6 +2,7 @@
 agp = "8.6.0-alpha07"
 cameraCamera2 = "1.3.4"
 cameraLifecycle = "1.3.4"
+cameraMlkitVision = "1.4.0-rc04"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -11,12 +12,14 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.1.4"
+playServicesMlkitBarcodeScanning = "18.3.1"
 textRecognition = "16.0.1"
 translate = "17.0.3"
 
 [libraries]
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision", version.ref = "cameraMlkitVision" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -26,6 +29,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+play-services-mlkit-barcode-scanning = { module = "com.google.android.gms:play-services-mlkit-barcode-scanning", version.ref = "playServicesMlkitBarcodeScanning" }
 text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "textRecognition" }
 translate = { module = "com.google.mlkit:translate", version.ref = "translate" }
 

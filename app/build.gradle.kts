@@ -50,4 +50,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.text.recognition)
     implementation(libs.translate)
+    implementation(libs.play.services.mlkit.barcode.scanning)
+    implementation(libs.androidx.camera.mlkit.vision)
 }
