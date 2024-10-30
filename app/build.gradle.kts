@@ -18,6 +18,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        mlModelBinding = true
     }
 
     buildTypes {
@@ -45,6 +46,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -52,4 +55,5 @@ dependencies {
     implementation(libs.translate)
     implementation(libs.play.services.mlkit.barcode.scanning)
     implementation(libs.androidx.camera.mlkit.vision)
+    implementation(libs.tensorflow.lite.task.vision)
 }

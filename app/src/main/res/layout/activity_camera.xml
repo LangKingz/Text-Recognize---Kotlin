@@ -12,4 +12,29 @@
 		android:id="@+id/viewFinder"
 	/>
 
+	<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+	          android:id="@+id/tvResult"
+	          android:background="#bfffffff"
+	          android:padding="16dp"
+	          android:lines="3"
+	          android:maxLines="3"
+	          android:textSize="20sp"
+	          android:text="Result"
+	          android:textColor="@color/black" app:layout_constraintBottom_toBottomOf="parent"
+	          app:layout_constraintStart_toStartOf="parent"/>
+
+	<TextView
+			android:id="@+id/tvInferenceTime"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:lines="1"
+			android:padding="16dp"
+			android:textSize="20sp"
+			android:gravity="end"
+			android:textColor="@color/white"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			tools:text="Inference Time" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

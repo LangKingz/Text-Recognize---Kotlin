@@ -134,3 +134,4 @@ class MainActivity : AppCompatActivity() {
         private const val REQUIRED_PERMISSIONS = android.Manifest.permission.CAMERA
     }
 }
+
