@@ -1,29 +1,29 @@
 package com.dicoding.asclepius.view
 
-
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import com.dicoding.asclepius.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.dicoding.asclepius.data.database.roomHistory
 import com.dicoding.asclepius.databinding.ActivityMainBinding
-import com.dicoding.asclepius.getImageUri
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.task.vision.classifier.Classifications
-
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var currentImageUri: Uri? = null
     private lateinit var imageClassifierHelper: ImageClassifierHelper
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +32,16 @@ class MainActivity : AppCompatActivity() {
 
         binding.galleryButton.setOnClickListener {
             startGallery()
+        }
+
+        binding.btnHistory.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnNews.setOnClickListener{
+            val intent = Intent(this,NewsActivity::class.java)
+            startActivity(intent)
         }
 
         binding.analyzeButton.setOnClickListener {
@@ -49,43 +59,19 @@ class MainActivity : AppCompatActivity() {
                                 val cancerPercentage = (cancerProbability * 100).toInt()
                                 val noCancerPercentage = (noCancerProbability * 100).toInt()
 
+                                val intent = Intent(this@MainActivity,ResultActivity::class.java)
+                                intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
+                                intent.putExtra(ResultActivity.EXTRA_RESULT, "Cancer: $cancerPercentage% \n No Cancer: $noCancerPercentage%")
+                                startActivity(intent)
 
-                                // Kirim hasil ke ResultActivity
-                                if (cancerPercentage > noCancerPercentage) {
-                                    val intent =
-                                        Intent(this@MainActivity, ResultActivity::class.java)
-                                    intent.putExtra(
-                                        ResultActivity.EXTRA_IMAGE_URI,
-                                        currentImageUri.toString()
-                                    )
-                                    intent.putExtra(
-                                        ResultActivity.EXTRA_RESULT,
-                                        "Cancer : $cancerPercentage%"
-                                    )
-                                    startActivity(intent)
-                                } else {
-                                    val intent =
-                                        Intent(this@MainActivity, ResultActivity::class.java)
-                                    intent.putExtra(
-                                        ResultActivity.EXTRA_IMAGE_URI,
-                                        currentImageUri.toString()
-                                    )
-                                    intent.putExtra(
-                                        ResultActivity.EXTRA_RESULT,
-                                        "No Cancer : $noCancerPercentage%"
-                                    )
-                                    startActivity(intent)
-                                }
                             } else {
                                 showToast("Invalid result format")
                             }
                             binding.progressIndicator.visibility = View.GONE
                         }
 
-
                         override fun onError(error: String) {
                             showToast(error)
-
                             binding.progressIndicator.visibility = View.GONE
                         }
                     }
@@ -95,7 +81,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
 
     private fun startGallery() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -113,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

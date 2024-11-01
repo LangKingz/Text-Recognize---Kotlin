@@ -2,11 +2,15 @@ package com.dicoding.asclepius.helper
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.media.Image
+import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
+import com.dicoding.asclepius.data.database.History
+import com.dicoding.asclepius.data.database.roomHistory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.ops.CastOp
@@ -16,7 +20,11 @@ import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
-
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class ImageClassifierHelper(
@@ -69,9 +77,8 @@ class ImageClassifierHelper(
             .build()
 
         val tensorImage = imageProcess.process(TensorImage.fromBitmap(bitmap))
-        var inferenceTime = SystemClock.uptimeMillis()
         val results = imageClassifier?.classify(tensorImage)
-        inferenceTime = SystemClock.uptimeMillis() - inferenceTime
+
         classifierListener?.onResult(results)
     }
 
