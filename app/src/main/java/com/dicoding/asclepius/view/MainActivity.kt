@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageClassifierHelper: ImageClassifierHelper
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.btnNews.setOnClickListener{
-            val intent = Intent(this,NewsActivity::class.java)
+        binding.btnNews.setOnClickListener {
+            val intent = Intent(this, NewsActivity::class.java)
             startActivity(intent)
         }
 
@@ -59,9 +59,15 @@ class MainActivity : AppCompatActivity() {
                                 val cancerPercentage = (cancerProbability * 100).toInt()
                                 val noCancerPercentage = (noCancerProbability * 100).toInt()
 
-                                val intent = Intent(this@MainActivity,ResultActivity::class.java)
-                                intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
-                                intent.putExtra(ResultActivity.EXTRA_RESULT, "Cancer: $cancerPercentage% \n No Cancer: $noCancerPercentage%")
+                                val intent = Intent(this@MainActivity, ResultActivity::class.java)
+                                intent.putExtra(
+                                    ResultActivity.EXTRA_IMAGE_URI,
+                                    currentImageUri.toString()
+                                )
+                                intent.putExtra(
+                                    ResultActivity.EXTRA_RESULT,
+                                    "Cancer: $cancerPercentage% \n No Cancer: $noCancerPercentage%"
+                                )
                                 startActivity(intent)
 
                             } else {
@@ -80,6 +86,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_IMAGE_URI,currentImageUri)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        currentImageUri = savedInstanceState.getParcelable(EXTRA_IMAGE_URI)
+        currentImageUri?.let {
+            binding.previewImageView.setImageURI(it)
+        }
     }
 
     private fun startGallery() {
@@ -102,5 +121,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        private const val EXTRA_IMAGE_URI = "image_uri"
     }
 }

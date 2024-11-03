@@ -3,6 +3,7 @@ package com.dicoding.asclepius.helper
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -29,7 +30,7 @@ import java.util.Locale
 
 class ImageClassifierHelper(
     var threshold : Float = 0.1f,
-    var maxResult: Int =3,
+    var maxResult: Int =2,
     val modelName :String = "cancer_classification.tflite",
     val context: Context,
     val classifierListener : ClassifierListener?
@@ -63,23 +64,46 @@ class ImageClassifierHelper(
 
     fun classifyStaticImage(imageUri: Uri) {
         val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
-        classifyBitmap(bitmap)
+
+        var bestResults: List<Classifications>? = null
+        var highestConfidence = 0f
+
+        val rotations = listOf(0, 90, 180, 270)
+
+        for (rotation in rotations) {
+            val rotatedBitmap = rotateBitmap(bitmap, rotation)
+            val results = classifyBitmap(rotatedBitmap)
+
+            val topResult = results?.maxByOrNull { it.categories[0].score }
+            if (topResult != null && topResult.categories[0].score > highestConfidence) {
+                highestConfidence = topResult.categories[0].score
+                bestResults = results
+            }
+        }
+
+        classifierListener?.onResult(bestResults)
     }
 
-    private fun classifyBitmap(bitmap: Bitmap){
-        if (imageClassifier != null){
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+
+    private fun classifyBitmap(bitmap: Bitmap): List<Classifications>? {
+        if (imageClassifier == null) {
             setupImageClassifier()
         }
 
         val imageProcess = ImageProcessor.Builder()
-            .add(ResizeOp(224,224,ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+            .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
             .add(CastOp(DataType.FLOAT32))
             .build()
 
         val tensorImage = imageProcess.process(TensorImage.fromBitmap(bitmap))
-        val results = imageClassifier?.classify(tensorImage)
 
-        classifierListener?.onResult(results)
+        return imageClassifier?.classify(tensorImage)
     }
 
     interface ClassifierListener{
