@@ -54,10 +54,10 @@ class MainActivity : AppCompatActivity() {
                             Log.d("RESULT", "Classification Result: $result")
                             if (result != null && result.isNotEmpty() && result[0].categories.size >= 2) {
                                 val cancerProbability = result[0].categories[0].score
-                                val noCancerProbability = result[0].categories[1].score
                                 // Hitung persentase
                                 val cancerPercentage = (cancerProbability * 100).toInt()
-                                val noCancerPercentage = (noCancerProbability * 100).toInt()
+
+                                val resulText = result[0].categories[0].label
 
                                 val intent = Intent(this@MainActivity, ResultActivity::class.java)
                                 intent.putExtra(
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                                 intent.putExtra(
                                     ResultActivity.EXTRA_RESULT,
-                                    "Cancer: $cancerPercentage% \n No Cancer: $noCancerPercentage%"
+                                    "$resulText = $cancerPercentage%"
                                 )
                                 startActivity(intent)
 
